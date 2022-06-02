@@ -6,3 +6,5 @@ export interface Monitor {
   env: Record<string, string>;
   data: Record<string, string>;
 }
+
+export type Monitors = Record<string, Monitor>;

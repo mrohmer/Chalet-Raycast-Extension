@@ -60,7 +60,8 @@
     "dev": "ray develop",
     "fix-lint": "ray lint --fix",
     "lint": "ray lint",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "commitlint": "commitlint"
   },
   "volta": {
     "node": "16.15.0"
