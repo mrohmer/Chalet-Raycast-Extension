@@ -1,4 +1,4 @@
-import { getPreferenceValues, List, showToast, Toast } from "@raycast/api";
+import {Action, ActionPanel, getPreferenceValues, List, openExtensionPreferences, showToast, Toast} from "@raycast/api";
 import { useEffect, useState } from "react";
 import EventSource from "eventsource";
 import axios from "axios";
@@ -149,9 +149,10 @@ const showFailure = (title: string) => {
     title,
   });
 
-  // todo: add action to open settings
   return (
-    <List>
+    <List actions={<ActionPanel>
+      <Action title="Open Preferences" onAction={openExtensionPreferences} />
+    </ActionPanel>}>
       <List.EmptyView icon={{ source: "hotel.png" }} title={title} />
     </List>
   );
