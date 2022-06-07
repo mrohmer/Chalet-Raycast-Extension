@@ -6,24 +6,18 @@ import { MonitorItem } from "./components/monitor-item";
 import { Monitors } from "./models/monitor";
 import { ListError } from "./components/list-error";
 import { filterObject } from "./utils/filter-object";
-
-interface Preferences {
-  port: string;
-}
+import { validatePort } from "./utils/validate-port";
+import { Preferences } from "./models/preferences";
+import { Websocket } from "./services/websocket";
 
 export default function Command() {
   const { port: portStr } = getPreferenceValues<Preferences>();
 
-  if (!portStr?.trim()) {
-    return <ListError title="Port cannot be empty." />;
-  }
-  if (!/^[1-9]\d+$/.test(portStr) || isNaN(parseInt(portStr))) {
-    return <ListError title="Port needs to be number." />;
+  const portError = validatePort(portStr);
+  if (portError) {
+    return <ListError title={portError} />;
   }
   const port = parseInt(portStr);
-  if (port <= 0 || port > 65000) {
-    return <ListError title="Port needs to be between 1 & 65000." />;
-  }
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | undefined>(undefined);
@@ -42,31 +36,30 @@ export default function Command() {
   }, [searchText, monitors]);
 
   useEffect(() => {
-    const websocket = new EventSource(`http://localhost:${port}/_/events`);
-
-    websocket.onerror = (evt) => {
-      showToast({
-        style: Toast.Style.Failure,
-        title: String(evt.data),
-      });
-      setError(evt.data);
+    const websocket = new Websocket(`http://localhost:${port}/_/events`)
+      .on("error", (evt) => {
+        showToast({
+          style: Toast.Style.Failure,
+          title: String(evt.data),
+        });
+        setError(evt.data);
+      })
+      .on("open", () => {
+        setError(undefined);
+      })
+      .on("message", (evt) => {
+        setError(undefined);
+        setLoading(false);
+        try {
+          setMonitors(JSON.parse(evt.data));
+        } catch (e) {
+          setError(String(e));
+        }
+      })
+      .connect();
+    return () => {
+      websocket?.disconnect();
     };
-
-    websocket.onopen = () => {
-      setError(undefined);
-    };
-
-    websocket.onmessage = (evt) => {
-      setError(undefined);
-      setLoading(false);
-      try {
-        setMonitors(JSON.parse(evt.data));
-      } catch (e) {
-        setError(String(e));
-      }
-    };
-
-    return () => websocket?.close();
   }, [port]);
 
   const post = (path: string) => {
