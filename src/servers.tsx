@@ -112,7 +112,7 @@ export default function Command() {
       ) : (
         !loading && (
           <List.EmptyView
-            icon={{ source: "hotel.png" }}
+            icon={{ source: "chalet.png" }}
             title={"Could not find monitors."}
           />
         )

@@ -3,7 +3,7 @@
   "name": "chalet",
   "title": "Chalet",
   "description": "Manage your Chalet Servers",
-  "icon": "hotel.png",
+  "icon": "chalet.png",
   "author": "mrohmer",
   "categories": [
     "Developer Tools"

@@ -29,7 +29,7 @@ export function ListError({ title, hideToast }: Props) {
         </ActionPanel>
       }
     >
-      <List.EmptyView icon={{ source: "hotel.png" }} title={title} />
+      <List.EmptyView icon={{ source: "chalet.png" }} title={title} />
     </List>
   );
 }
