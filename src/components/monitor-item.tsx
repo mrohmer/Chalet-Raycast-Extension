@@ -1,5 +1,6 @@
 import { Action, ActionPanel, Color, Icon, List } from "@raycast/api";
 import { Monitor } from "../models/monitor";
+import {MonitorDetails} from './monitor-details';
 
 export interface MonitorItemProps {
   onStart: (key: string) => void;
@@ -34,6 +35,9 @@ export const MonitorItem = ({
             20
           )}`}
           onAction={() => (status !== "running" ? onStart(key) : onStop(key))}
+        />
+        <Action.Push title="Details"
+                     target={<MonitorDetails id={key} />}
         />
         {status === "running" ? (
           <Action.OpenInBrowser url={browserUrl} />
